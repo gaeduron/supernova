@@ -1,0 +1,2 @@
+# supernova
+Supernova manga blog
