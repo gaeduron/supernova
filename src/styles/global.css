@@ -1,0 +1,120 @@
+@import "tailwindcss";
+
+@theme {
+	--font-display: "Neuton", Georgia, serif;
+	--font-body: "Neuton", Georgia, serif;
+}
+
+@layer base {
+	html {
+		scroll-behavior: smooth;
+	}
+
+	body {
+		@apply min-h-screen font-body antialiased;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		@apply font-bold;
+	}
+}
+
+@layer utilities {
+	.link-page-bg {
+		background: linear-gradient(
+			180deg,
+			rgb(255, 246, 202) 0%,
+			rgb(226, 214, 185) 42%,
+			rgb(198, 178, 130) 100%
+		);
+	}
+
+	.link-card {
+		background: rgb(255 252 246);
+		box-shadow:
+			0 24px 48px rgb(26 45 58 / 0.12),
+			0 0 0 1px rgb(83 172 211 / 0.12);
+	}
+
+	.link-avatar-frame {
+		display: inline-flex;
+		border-radius: 50%;
+		padding: 4px;
+		background:
+			radial-gradient(circle at 28% 22%, rgb(255 248 210) 0%, transparent 42%),
+			radial-gradient(circle at 72% 78%, rgb(180 120 35) 0%, transparent 38%),
+			conic-gradient(
+				from 200deg at 50% 50%,
+				rgb(255 236 165) 0deg,
+				rgb(255 184 45) 55deg,
+				rgb(196 138 32) 115deg,
+				rgb(255 228 150) 175deg,
+				rgb(255 200 70) 235deg,
+				rgb(150 105 28) 295deg,
+				rgb(255 236 165) 360deg
+			);
+		box-shadow:
+			0 6px 16px rgb(180 130 40 / 0.12),
+			0 0 20px rgb(255 184 45 / 0.08);
+	}
+
+	.link-avatar {
+		display: block;
+		width: 8rem;
+		height: 8rem;
+		border-radius: 50%;
+		object-fit: cover;
+	}
+
+	.link-name {
+		color: rgb(26 45 58);
+	}
+
+	.link-pill {
+		position: relative;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		font-family: "Nunito", system-ui, sans-serif;
+		color: rgb(26 45 58);
+		box-shadow:
+			0 4px 14px rgb(0 0 0 / 0.12),
+			0 0 0 1px rgb(83 172 211 / 0.1);
+		transition:
+			transform 150ms ease,
+			box-shadow 150ms ease;
+	}
+
+	.link-pill-icon {
+		position: absolute;
+		left: 1.5rem;
+		width: 1.25rem;
+		height: 1.25rem;
+		flex-shrink: 0;
+	}
+
+	.link-pill-label {
+		font-size: 0.875rem;
+		font-weight: 700;
+		text-transform: uppercase;
+		letter-spacing: -0.02em;
+		text-align: center;
+	}
+
+	.link-pill:hover {
+		transform: translateY(-1px);
+		box-shadow:
+			0 6px 20px rgb(0 0 0 / 0.16),
+			0 0 0 1px rgb(83 172 211 / 0.1);
+	}
+
+	.link-pill:active {
+		transform: translateY(0);
+	}
+}

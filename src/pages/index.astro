@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SocialIcon from '../components/SocialIcon.astro';
+import '../styles/global.css';
+
+const base = import.meta.env.BASE_URL;
+const avatar = `${base}images/Supernova_profile_picture.png`;
+
+const links = [
+	{
+		label: 'Instagram',
+		href: 'https://www.instagram.com/nicolas_jaffre_/',
+		icon: 'instagram' as const,
+	},
+	{
+		label: 'Twitter',
+		href: 'https://twitter.com/nicolas_jaffre',
+		icon: 'twitter' as const,
+	},
+	{
+		label: 'Twitch',
+		href: 'https://www.twitch.tv/nicolas_jaffre',
+		icon: 'twitch' as const,
+	},
+];
+---
+
+<BaseLayout>
+	<div class="link-page-bg flex min-h-screen flex-col items-center px-5 py-10 sm:py-16">
+		<div class="link-card flex w-full max-w-sm flex-col items-center rounded-3xl px-6 py-10 sm:px-8 sm:py-12">
+			<div class="link-avatar-frame">
+				<img
+					src={avatar}
+					alt="Nicolas Jaffré"
+					width="200"
+					height="200"
+					class="link-avatar"
+					loading="eager"
+					decoding="async"
+				/>
+			</div>
+
+			<p class="link-name mt-5 text-4xl font-bold tracking-tighter">Nicolas Jaffre</p>
+
+			<ul class="mt-10 flex w-full flex-col gap-4">
+				{
+					links.map(({ label, href, icon }) => (
+						<li>
+							<a
+								href={href}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="link-pill rounded-full bg-white px-6 py-4"
+							>
+								<SocialIcon name={icon} />
+								<span class="link-pill-label">{label}</span>
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+</BaseLayout>
