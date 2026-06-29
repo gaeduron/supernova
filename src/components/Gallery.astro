@@ -10,16 +10,16 @@ const { images } = Astro.props;
 
 <div class="gallery-masonry w-full max-w-5xl">
 	{
-		images.map(({ src, alt }) => (
+		images.map(({ src, title }, index) => (
 			<article class="gallery-card overflow-hidden rounded-3xl">
 				<button
 					type="button"
 					class="gallery-card-trigger"
-					data-gallery-src={src}
-					data-gallery-alt={alt}
-					aria-label={`View ${alt} full screen`}
+					data-gallery-index={index}
+					aria-label={`View ${title} full screen`}
 				>
-					<img src={src} alt={alt} loading="lazy" decoding="async" />
+					<img src={src} alt={title} loading="lazy" decoding="async" />
+					<span class="gallery-card-caption">{title}</span>
 				</button>
 			</article>
 		))
@@ -36,22 +36,44 @@ const { images } = Astro.props;
 				stroke-linecap="round"></path>
 		</svg>
 	</button>
-	<img class="gallery-lightbox-image" alt="" />
+	<div class="gallery-lightbox-layout">
+		<figure class="gallery-lightbox-media">
+			<img class="gallery-lightbox-image" alt="" />
+		</figure>
+		<aside class="gallery-lightbox-panel">
+			<h2 class="gallery-lightbox-title"></h2>
+			<div class="gallery-lightbox-description"></div>
+		</aside>
+	</div>
 </dialog>
 
-<script>
+<script define:vars={{ galleryData: images }}>
 	const gallery = document.querySelector('.gallery-masonry');
-	const dialog = document.querySelector('.gallery-lightbox') as HTMLDialogElement | null;
-	const lightboxImage = dialog?.querySelector('.gallery-lightbox-image') as HTMLImageElement | null;
+	const dialog = document.querySelector('.gallery-lightbox');
+	const lightboxImage = dialog?.querySelector('.gallery-lightbox-image');
+	const lightboxTitle = dialog?.querySelector('.gallery-lightbox-title');
+	const lightboxDescription = dialog?.querySelector('.gallery-lightbox-description');
 	const closeButton = dialog?.querySelector('.gallery-lightbox-close');
 
-	gallery?.addEventListener('click', (event) => {
-		const trigger = (event.target as Element).closest('[data-gallery-src]') as HTMLElement | null;
-		if (!trigger || !dialog || !lightboxImage) return;
+	function openLightbox(index) {
+		const item = galleryData[index];
+		if (!item || !dialog || !lightboxImage || !lightboxTitle || !lightboxDescription) return;
 
-		lightboxImage.src = trigger.dataset.gallerySrc ?? '';
-		lightboxImage.alt = trigger.dataset.galleryAlt ?? '';
+		lightboxImage.src = item.src;
+		lightboxImage.alt = item.title;
+		lightboxTitle.textContent = item.title;
+		lightboxDescription.innerHTML = item.description;
 		dialog.showModal();
+	}
+
+	gallery?.addEventListener('click', (event) => {
+		const trigger = event.target.closest('[data-gallery-index]');
+		if (!trigger) return;
+
+		const index = Number(trigger.dataset.galleryIndex);
+		if (Number.isNaN(index)) return;
+
+		openLightbox(index);
 	});
 
 	closeButton?.addEventListener('click', () => dialog?.close());

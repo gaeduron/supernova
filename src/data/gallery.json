@@ -1,0 +1,29 @@
+{
+	"images": [
+		{
+			"source": "Author_Nicolas_Jaffré_concept_art_pinboard.png",
+			"title": "Concept art - Tableau de références",
+			"description": "<p>Planche de concept art réunissant références visuelles et directions artistiques pour l'univers de <em>Supernova</em>.</p>"
+		},
+		{
+			"source": "Supernova_Archie_Sketch_vertical.png",
+			"title": "Archie - croquis d'etude couleur",
+			"description": "<p>Étude verticale du personnage d'Archie, explorant rendu et couleur.</p>"
+		},
+		{
+			"source": "Supernova_Archie_Sketch.webp",
+			"title": "Archie — croquis",
+			"description": "<p>Croquis exploratoire d'Archie pour le volume 1.</p>"
+		},
+		{
+			"source": "Supernova_volume_1_concept_art_Library.png",
+			"title": "Volume 1 — concept art bibliothèque",
+			"description": "<p>Concept art de la bibliothèque, l'un des décors clés du premier volume.</p>"
+		},
+		{
+			"source": "Supernova_volume_1_sketch.webp",
+			"title": "Volume 1 — croquis",
+			"description": "<p>Croquis préparatoire pour une scène du volume 1 de <em>Supernova</em>.</p>"
+		}
+	]
+}
