@@ -1,0 +1,62 @@
+---
+import type { GalleryImage } from '../lib/gallery.ts';
+
+interface Props {
+	images: GalleryImage[];
+}
+
+const { images } = Astro.props;
+---
+
+<div class="gallery-masonry w-full max-w-5xl">
+	{
+		images.map(({ src, alt }) => (
+			<article class="gallery-card overflow-hidden rounded-3xl">
+				<button
+					type="button"
+					class="gallery-card-trigger"
+					data-gallery-src={src}
+					data-gallery-alt={alt}
+					aria-label={`View ${alt} full screen`}
+				>
+					<img src={src} alt={alt} loading="lazy" decoding="async" />
+				</button>
+			</article>
+		))
+	}
+</div>
+
+<dialog class="gallery-lightbox" aria-label="Image full screen view">
+	<button type="button" class="gallery-lightbox-close" aria-label="Close">
+		<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+			<path
+				d="M6 6l12 12M18 6L6 18"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"></path>
+		</svg>
+	</button>
+	<img class="gallery-lightbox-image" alt="" />
+</dialog>
+
+<script>
+	const gallery = document.querySelector('.gallery-masonry');
+	const dialog = document.querySelector('.gallery-lightbox') as HTMLDialogElement | null;
+	const lightboxImage = dialog?.querySelector('.gallery-lightbox-image') as HTMLImageElement | null;
+	const closeButton = dialog?.querySelector('.gallery-lightbox-close');
+
+	gallery?.addEventListener('click', (event) => {
+		const trigger = (event.target as Element).closest('[data-gallery-src]') as HTMLElement | null;
+		if (!trigger || !dialog || !lightboxImage) return;
+
+		lightboxImage.src = trigger.dataset.gallerySrc ?? '';
+		lightboxImage.alt = trigger.dataset.galleryAlt ?? '';
+		dialog.showModal();
+	});
+
+	closeButton?.addEventListener('click', () => dialog?.close());
+
+	dialog?.addEventListener('click', (event) => {
+		if (event.target === dialog) dialog.close();
+	});
+</script>

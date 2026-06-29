@@ -1,10 +1,13 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Gallery from '../components/Gallery.astro';
 import SocialIcon from '../components/SocialIcon.astro';
+import { getGalleryImages } from '../lib/gallery.ts';
 import '../styles/global.css';
 
 const base = import.meta.env.BASE_URL;
 const avatar = `${base}images/Supernova_profile_picture_60kb.jpg`;
+const galleryImages = getGalleryImages(base);
 
 const links = [
 	{
@@ -26,7 +29,7 @@ const links = [
 ---
 
 <BaseLayout>
-	<div class="link-page-bg flex min-h-screen flex-col items-center px-5 py-10 sm:py-16">
+	<div class="link-page-bg flex min-h-screen flex-col items-center gap-8 px-5 py-10 sm:py-16">
 		<div class="link-card flex w-full max-w-sm flex-col items-center rounded-3xl px-6 py-10 sm:px-8 sm:py-12">
 			<div class="link-avatar-frame">
 				<img
@@ -60,5 +63,7 @@ const links = [
 				}
 			</ul>
 		</div>
+
+		{galleryImages.length > 0 && <Gallery images={galleryImages} />}
 	</div>
 </BaseLayout>
