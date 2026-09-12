@@ -8,12 +8,14 @@ export type GalleryImage = {
 	source: string;
 	title: string;
 	description: string;
+	date?: string;
 };
 
 type GalleryEntry = {
 	source: string;
 	title: string;
 	description?: string;
+	date?: string;
 };
 
 type GalleryManifest = {
@@ -60,6 +62,7 @@ export function getGalleryImages(base: string, folder = 'galerie'): GalleryImage
 			source: entry.source,
 			title: entry.title,
 			description: entry.description ?? '',
+			date: entry.date,
 		});
 	}
 

@@ -285,35 +285,59 @@
 		display: flex;
 		flex: 1 1 35%;
 		flex-direction: column;
-		gap: 1rem;
+		gap: 1.25rem;
 		min-height: 0;
-		padding: 1.5rem;
+		padding: 1.75rem 1.5rem 2rem;
 		overflow-y: auto;
-		background: rgb(241, 227, 203);
+		background: rgb(255 252 246);
 	}
 
 	@media (width >= 1024px) {
 		.gallery-lightbox-panel {
-			padding: 2rem;
+			padding: 2.75rem 2.5rem;
+			border-left: 1px solid rgb(26 45 58 / 0.08);
 		}
 	}
 
 	.gallery-lightbox-title {
+		position: relative;
+		padding-bottom: 1rem;
 		color: rgb(26 45 58);
-		font-size: 1.5rem;
-		font-weight: 700;
-		line-height: 1.2;
-		letter-spacing: -0.02em;
+		font-family: "Neuton", Georgia, serif;
+		font-size: 1.875rem;
+		font-weight: 800;
+		line-height: 1.1;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.gallery-lightbox-title::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 2.5rem;
+		height: 3px;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, rgb(255 184 45), rgb(196 138 32));
+	}
+
+	@media (width >= 1024px) {
+		.gallery-lightbox-title {
+			font-size: 2.125rem;
+		}
 	}
 
 	.gallery-lightbox-description {
-		color: rgb(26 45 58 / 0.85);
-		font-size: 1rem;
-		line-height: 1.6;
+		color: rgb(26 45 58 / 0.78);
+		font-family: "Nunito", system-ui, sans-serif;
+		font-size: 0.9375rem;
+		font-weight: 400;
+		line-height: 1.55;
 	}
 
 	.gallery-lightbox-description :where(p, ul, ol) {
-		margin: 0 0 0.75rem;
+		margin: 0 0 0.875rem;
 	}
 
 	.gallery-lightbox-description :where(p:last-child, ul:last-child, ol:last-child) {
@@ -322,12 +346,39 @@
 
 	.gallery-lightbox-description a {
 		color: rgb(26 45 58);
+		font-weight: 700;
 		text-decoration: underline;
-		text-underline-offset: 0.15em;
+		text-decoration-color: rgb(83 172 211 / 0.6);
+		text-decoration-thickness: 1.5px;
+		text-underline-offset: 0.18em;
+		transition: text-decoration-color 150ms ease;
+	}
+
+	.gallery-lightbox-description a:hover {
+		text-decoration-color: rgb(83 172 211);
 	}
 
 	.gallery-lightbox-description em {
 		font-style: italic;
+	}
+
+	.gallery-lightbox-description strong {
+		color: rgb(26 45 58);
+		font-weight: 700;
+	}
+
+	.gallery-lightbox-date {
+		display: block;
+		margin-top: auto;
+		padding-top: 1.25rem;
+		border-top: 1px solid rgb(26 45 58 / 0.08);
+		color: rgb(26 45 58 / 0.55);
+		font-family: "Nunito", system-ui, sans-serif;
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		font-variant-numeric: tabular-nums;
 	}
 
 	.gallery-lightbox-close {

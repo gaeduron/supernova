@@ -43,6 +43,7 @@ const { images } = Astro.props;
 		<aside class="gallery-lightbox-panel">
 			<h2 class="gallery-lightbox-title"></h2>
 			<div class="gallery-lightbox-description"></div>
+			<time class="gallery-lightbox-date" hidden></time>
 		</aside>
 	</div>
 </dialog>
@@ -53,7 +54,13 @@ const { images } = Astro.props;
 	const lightboxImage = dialog?.querySelector('.gallery-lightbox-image');
 	const lightboxTitle = dialog?.querySelector('.gallery-lightbox-title');
 	const lightboxDescription = dialog?.querySelector('.gallery-lightbox-description');
+	const lightboxDate = dialog?.querySelector('.gallery-lightbox-date');
 	const closeButton = dialog?.querySelector('.gallery-lightbox-close');
+
+	// Turn consecutive <br> tags into paragraph breaks so spacing is driven by CSS.
+	function formatDescription(html) {
+		return html.replace(/(?:\s*<br\s*\/?>\s*){2,}/gi, '</p><p>');
+	}
 
 	function openLightbox(index) {
 		const item = galleryData[index];
@@ -62,7 +69,11 @@ const { images } = Astro.props;
 		lightboxImage.src = item.src;
 		lightboxImage.alt = item.title;
 		lightboxTitle.textContent = item.title;
-		lightboxDescription.innerHTML = item.description;
+		lightboxDescription.innerHTML = formatDescription(item.description);
+		if (lightboxDate) {
+			lightboxDate.textContent = item.date ?? '';
+			lightboxDate.hidden = !item.date;
+		}
 		dialog.showModal();
 	}
 
