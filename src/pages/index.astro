@@ -43,18 +43,19 @@ const links = [
 			<p class="link-name mt-6 text-4xl font-bold leading-none tracking-tighter">Nicolas Jaffre</p>
 			<p class="link-subtitle mt-0.5">Auteur de Supernova</p>
 
-			<ul class="mt-8 flex w-full flex-col gap-2">
+			<ul class="mt-8 flex w-full flex-row gap-2">
 				{
 					links.map(({ label, href, icon }) => (
-						<li>
+						<li class="flex-1">
 							<a
 								href={href}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="link-pill bg-white px-6 py-4"
+								aria-label={label}
+								class="link-pill bg-white py-4"
 							>
 								<SocialIcon name={icon} />
-								<span class="link-pill-label">{label}</span>
+								<span class="sr-only">{label}</span>
 							</a>
 						</li>
 					))
