@@ -7,13 +7,29 @@ interface Props {
 }
 
 const { images, title } = Astro.props;
+
+// Cards show a plain-text teaser, so the manifest's rich description is stripped.
+const excerpt = (html: string) =>
+	html
+		.replace(/<[^>]*>/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+
+// Manifest dates are YYYY/MM/DD; the badge shows them the French way.
+const formatDate = (date?: string) => {
+	if (!date) return undefined;
+	const parsed = new Date(date.replace(/\//g, '-'));
+	return Number.isNaN(parsed.getTime())
+		? date
+		: parsed.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+};
 ---
 
 <div class="gallery-rail-shell">
 	{title && <h2 class="gallery-rail-title">{title}</h2>}
 	<ul class="gallery-rail" data-at-start>
 		{
-			images.map(({ src, title }, index) => (
+			images.map(({ src, title, description, date }, index) => (
 				<li class="gallery-card">
 					<button
 						type="button"
@@ -23,8 +39,11 @@ const { images, title } = Astro.props;
 					>
 						<span class="gallery-card-media">
 							<img src={src} alt={title} loading="lazy" decoding="async" />
+							{date && <span class="gallery-card-date">{formatDate(date)}</span>}
 						</span>
-						<span class="gallery-card-caption">{title}</span>
+						<span class="gallery-card-body">
+							{description && <span class="gallery-card-excerpt">{excerpt(description)}</span>}
+						</span>
 					</button>
 				</li>
 			))

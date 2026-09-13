@@ -1,40 +1,46 @@
 {
 	"images": [
 		{
-			"source": "Author_Nicolas_Jaffré_concept_art_pinboard.png",
-			"title": "Concept art - Tableau de références",
-			"description": "<p>Planche de concept art réunissant références visuelles et directions artistiques pour l'univers de <em>Supernova</em>.</p>",
+			"source": "supernova_dates_dedicaces_tome_1.png",
+			"title": "Dates des dédicaces",
+			"description": "<p>Voici les dates des dédicaces de septembre à novembre.</p>",
 			"date": "2026/09/12"
 		},
 		{
-			"source": "Supernova_Archie_Sketch_vertical.png",
-			"title": "Archie - croquis d'etude couleur",
-			"description": "<p>Étude verticale du personnage d'Archie, explorant rendu et couleur.</p>",
-			"date": "2026/09/12"
+			"source": "supernova_shikishi_offert_tome_1.jpg",
+			"title": "Un shikishi offert pour la sortie !",
+			"description": "<p>Supernova arrive en librairie le 18 septembre !<br/><br/>En plus de la jaquette réversible sur tout le premier tirage, mettez la main sur un shikishi exclusif en vous procurant votre tome via les librairies @japanimfrance !<br/><br/>Les librairies sont situées à Lorient, Nantes, Quimper, Rennes, Vannes, Saint-Brieuc et Saint-Nazaire mais vous pouvez aussi commander directement en ligne depuis japanim.com ! ^^<br/><br/>Ne manquez pas cette superbe illustration réalisée par @nicolas_jaffre_ !</p>",
+			"date": "2026/09/09"
 		},
 		{
-			"source": "Supernova_Archie_Sketch.webp",
-			"title": "Archie — croquis",
-			"description": "<p>Croquis exploratoire d'Archie pour le volume 1.</p>",
-			"date": "2026/09/12"
-		},
-		{
-			"source": "Supernova_volume_1_concept_art_Library.png",
-			"title": "Volume 1 — concept art bibliothèque",
-			"description": "<p>Concept art de la bibliothèque, l'un des décors clés du premier volume.</p>",
-			"date": "2026/09/12"
-		},
-		{
-			"source": "Supernova_volume_1_sketch.webp",
-			"title": "Volume 1 — croquis",
-			"description": "<p>Croquis préparatoire pour une scène du volume 1 de <em>Supernova</em>.</p>",
-			"date": "2026/09/12"
+			"source": "supernova_couverture_reversible_tome_1.webp",
+			"title": "Couverture réversible",
+			"description": "<p>Petite surprise pour le premier tirage : vous aurez droit à une couverture réversible ! La voici</p>",
+			"date": "2026/09/06"
 		},
 		{
 			"source": "supernova_affiche_sortie.jpg",
-			"title": "Supernova - Date de sortie",
+			"title": "Date de sortie annoncée !",
 			"description": "<p>Supernova, nouvelle création française signée <a href=\"https://www.instagram.com/nicolas_jaffre_\" target=\"_blank\">@nicolas_jaffre_</a> arrive chez Kana ! 🥳 <br/><br/>Suivez les aventures d'Archie, huissier malgré lui qui découvrira les côtés sombres de la justice ... 👀<br/><br/>📅 RDV le 18 septembre en librairie !</p>",
-			"date": "2026/09/12"
+			"date": "2026/09/01"
+		},
+		{
+			"source": "supernova_volume_1_concept_art_characters.jpg",
+			"title": "Concepts personnages",
+			"description": "<p>Demain, on commence la présentation des personnages avec « Achie » !<br/><br/>En attendant, petit teasing avec les premières recherches de personnages que j’ai faites pour le tome 1.<br/><br/>Encore merci pour tous les partages et gentils messages que j’ai reçus liés à l’extrait du chapitre 1 !</p>",
+			"date": "2026/08/19"
+		},
+		{
+			"source": "Supernova_volume_1_concept_art_Library.png",
+			"title": "Volume 1 - concept art bibliothèque",
+			"description": "<p>Je commence à avoir des dossiers avec pas mal de croquis et d'illustrations, ça permet de partager tout ça sans avoir à les terminer hehe...<br/><br/>Un jour je me motiverai à finir le paint de la bibliothèque, mais je dois focus sur le storyboard pour l'instant !<br/><br/>J'en ai aussi profité pour essayer plein de brush récupérer sur Clip Studio Asset .🔎</p>",
+			"date": "2024/04/16"
+		},
+		{
+			"source": "Supernova_Archie_Sketch.webp",
+			"title": "Archie - croquis",
+			"description": "<p>Je vous présente \"Archie\" le  personnage principal de mon prochain projet. 🔎💫</p>",
+			"date": "2024/04/11"
 		}
 	]
 }

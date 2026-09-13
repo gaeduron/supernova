@@ -6,11 +6,12 @@ import sharp from 'sharp';
 const SRC = 'public/images';
 const OUT = 'public/images/gallery';
 
-// The plate is already blurred and sits behind the cards, so it survives a
-// low quality setting and a small ceiling on width.
+// The plate is already blurred and sits behind the cards, so it survives
+// a small ceiling on width, but banding in its soft gradients shows, so it
+// keeps a high quality setting.
 await sharp(`${SRC}/supernova_bibliotheque_blured.png`).resize({ width: 2000 })
-	.webp({ quality: 70 }).toFile(`${OUT}/library-2000.webp`);
+	.webp({ quality: 85 }).toFile(`${OUT}/library-2000.webp`);
 await sharp(`${SRC}/supernova_bibliotheque_blured.png`).resize({ width: 1200 })
-	.webp({ quality: 70 }).toFile(`${OUT}/library-1200.webp`);
+	.webp({ quality: 85 }).toFile(`${OUT}/library-1200.webp`);
 
 console.log('gallery assets written to', OUT);
