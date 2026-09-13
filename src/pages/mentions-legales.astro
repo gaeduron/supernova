@@ -1,0 +1,134 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+const base = import.meta.env.BASE_URL;
+
+const CONTACT_EMAIL = 'gaetan.duron+supernova@gmail.com';
+const UPDATED = '13 septembre 2026';
+---
+
+<BaseLayout
+	title="Mentions légales — Supernova"
+	description="Mentions légales, propriété intellectuelle et politique de confidentialité du site nicolas-jaffre.com"
+>
+	<main class="legal-page">
+		<a href={base} class="legal-back">← Retour au site</a>
+
+		<h1>Mentions légales</h1>
+
+		<section class="legal-section">
+			<h2>Éditeur du site</h2>
+			<p>
+				Le site <strong>nicolas-jaffre.com</strong> est édité par Nicolas Jaffré, auteur du manga
+				<em>Supernova</em>, publié aux éditions Kana.
+			</p>
+			<dl class="legal-facts">
+				<div><dt>Directeur de la publication</dt><dd>Nicolas Jaffré</dd></div>
+				<div><dt>Conception et développement</dt><dd>Gaëtan Duron</dd></div>
+				<div><dt>Contact</dt><dd><a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></dd></div>
+			</dl>
+		</section>
+
+		<section class="legal-section">
+			<h2>Hébergement</h2>
+			<p>
+				Le site est hébergé par <strong>Railway Corporation</strong>, 548 Market St PMB 68956,
+				San Francisco, CA 94104, États-Unis —
+				<a href="https://railway.com" target="_blank" rel="noopener noreferrer">railway.com</a>.
+			</p>
+		</section>
+
+		<section class="legal-section">
+			<h2>Propriété intellectuelle</h2>
+			<p>
+				L'ensemble des contenus présents sur ce site — illustrations, dessins, personnages,
+				visuels, textes, le titre <em>Supernova</em> ainsi que son logo — est la propriété exclusive
+				de <strong>Nicolas Jaffré</strong> et des <strong>éditions Kana</strong>. Ces contenus sont
+				protégés par le Code de la propriété intellectuelle, notamment ses articles L.111-1 et L.122-4.
+			</p>
+			<p>
+				Toute reproduction, représentation, modification, publication, adaptation ou réutilisation
+				de tout ou partie de ces contenus, quel qu'en soit le procédé ou le support, est interdite
+				sans l'autorisation écrite préalable des ayants droit. Toute utilisation non autorisée
+				constitue une contrefaçon sanctionnée par les articles L.335-2 et suivants du Code de la
+				propriété intellectuelle.
+			</p>
+			<p>
+				Le code source du site, hors contenus éditoriaux et graphiques, est publié sous licence MIT.
+			</p>
+		</section>
+
+		<h1>Politique de confidentialité</h1>
+
+		<section class="legal-section">
+			<h2>Données collectées par le site</h2>
+			<p>
+				Ce site est un site statique de présentation. Il ne dépose <strong>aucun cookie</strong>,
+				n'embarque <strong>aucun outil de mesure d'audience</strong> ni traceur tiers, et ne comporte
+				aucun formulaire. Aucune donnée personnelle n'est collectée, stockée ou traitée par le site
+				lui-même.
+			</p>
+			<p>
+				Les polices de caractères et les images sont servies directement depuis nos serveurs :
+				l'affichage des pages n'entraîne aucune requête vers un service tiers.
+			</p>
+		</section>
+
+		<section class="legal-section">
+			<h2>QR code et lien court Bitly</h2>
+			<p>
+				Le QR code imprimé dans le manga renvoie vers ce site au moyen d'un lien court fourni par
+				<strong>Bitly, Inc.</strong> (New York, États-Unis). Lors de la redirection, Bitly enregistre
+				des données techniques telles que l'adresse IP, le type de navigateur et d'appareil, la
+				localisation approximative et la date de la visite, conformément à sa propre
+				<a href="https://bitly.com/pages/privacy" target="_blank" rel="noopener noreferrer"
+					>politique de confidentialité</a
+				>.
+			</p>
+			<p>
+				Nous n'avons accès qu'à des <strong>statistiques agrégées et anonymes</strong> (nombre de
+				scans, pays, type d'appareil). Ces données ne sont <strong>jamais partagées, cédées ni
+				vendues</strong> à des tiers et servent uniquement à mesurer l'usage du QR code.
+			</p>
+		</section>
+
+		<section class="legal-section">
+			<h2>Journaux du serveur</h2>
+			<p>
+				Comme tout hébergeur, Railway peut conserver des journaux techniques de connexion (adresse IP,
+				horodatage, page demandée) à des fins de sécurité et de bon fonctionnement du service. Ces
+				journaux sont traités par Railway selon sa
+				<a href="https://railway.com/legal/privacy" target="_blank" rel="noopener noreferrer"
+					>politique de confidentialité</a
+				> et ne sont pas exploités par nous.
+			</p>
+		</section>
+
+		<section class="legal-section">
+			<h2>Liens externes</h2>
+			<p>
+				Le site contient des liens vers des services tiers (Instagram, X, Twitch, Kana). Ces sites
+				disposent de leurs propres politiques de confidentialité, dont nous ne sommes pas responsables.
+			</p>
+		</section>
+
+		<section class="legal-section">
+			<h2>Vos droits</h2>
+			<p>
+				Conformément au Règlement général sur la protection des données (RGPD) et à la loi Informatique
+				et Libertés, vous disposez d'un droit d'accès, de rectification, d'effacement et d'opposition
+				concernant vos données. Le site ne collectant aucune donnée personnelle, ces droits s'exercent
+				principalement auprès des services tiers cités ci-dessus. Pour toute question, écrivez-nous à
+				<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. Vous pouvez également introduire une
+				réclamation auprès de la
+				<a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer">CNIL</a>.
+			</p>
+		</section>
+
+		<p class="legal-updated">Dernière mise à jour : {UPDATED}</p>
+	</main>
+
+	<Footer />
+</BaseLayout>
