@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
-/* Self-hosted Neuton. Two cuts ship with the site: SC Regular for body copy and
+/* Self-hosted Neuton. Two cuts ship with the site: Regular for body copy and
    Bold for headings. The site only ever asks for 400 and 700. */
 @font-face {
 	font-family: "Neuton";
-	src: url("/fonts/Neuton-SC-Regular.ttf") format("truetype");
+	src: url("/fonts/Neuton-Regular.ttf") format("truetype");
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;
@@ -18,9 +18,20 @@
 	font-display: swap;
 }
 
+/* Dela Suko Gothic, the heavy display face used for section titles. The source
+   is a 2.5MB CJK family; only the Latin subset ships (scripts/build-title-font.mjs). */
+@font-face {
+	font-family: "Dela Suko Gothic";
+	src: url("/fonts/subset/DelaSukoGothicOne-latin.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
 @theme {
 	--font-display: "Neuton", Georgia, serif;
 	--font-body: "Neuton", Georgia, serif;
+	--font-title: "Dela Suko Gothic", "Neuton", Georgia, sans-serif;
 }
 
 @layer base {
@@ -146,6 +157,434 @@
 	.link-pill:active {
 		transform: translateY(0);
 	}
+
+	/* The rail is one horizontal run of equally sized cards: big image on top,
+	   title on the parchment strip below. */
+	.gallery-rail-shell {
+		--gallery-gutter: 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: clamp(1.25rem, 3vw, 2rem);
+		width: 100%;
+	}
+
+	@media (width >= 48rem) {
+		.gallery-rail-shell {
+			--gallery-gutter: clamp(1.5rem, 4vw, 3rem);
+		}
+	}
+
+	/* Sits over the photo, so it carries its own shadow rather than relying on
+	   the section's wash. */
+	.gallery-rail-title {
+		margin: 0;
+		padding-inline: var(--gallery-gutter);
+		color: rgb(255 252 246);
+		font-family: var(--font-title);
+		font-size: clamp(1.75rem, 6vw, 3.25rem);
+		font-weight: 400;
+		line-height: 1.1;
+		letter-spacing: 0.005em;
+		text-shadow: 0 2px 18px rgb(26 21 14 / 0.55);
+	}
+
+	.gallery-rail {
+		--gallery-card-width: clamp(14rem, 72vw, 20rem);
+		--gallery-fade: clamp(2rem, 7vw, 6rem);
+		--gallery-fade-start: var(--gallery-fade);
+		--gallery-fade-end: var(--gallery-fade);
+		display: flex;
+		gap: clamp(1rem, 2.5vw, 1.75rem);
+		margin: 0;
+		padding: 0.5rem var(--gallery-gutter) 1.5rem;
+		list-style: none;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scroll-padding-left: var(--gallery-gutter);
+		scrollbar-width: none;
+		mask-image: linear-gradient(
+			to right,
+			transparent 0,
+			#000 var(--gallery-fade-start),
+			#000 calc(100% - var(--gallery-fade-end)),
+			transparent 100%
+		);
+	}
+
+	.gallery-rail[data-at-start] {
+		--gallery-fade-start: 0px;
+	}
+
+	.gallery-rail[data-at-end] {
+		--gallery-fade-end: 0px;
+	}
+
+	.gallery-rail::-webkit-scrollbar {
+		display: none;
+	}
+
+	.gallery-card {
+		flex: 0 0 var(--gallery-card-width);
+		width: var(--gallery-card-width);
+		scroll-snap-align: start;
+		border-radius: 1.5rem;
+		overflow: hidden;
+		background: rgb(255 252 246);
+		box-shadow:
+			0 24px 48px rgb(26 45 58 / 0.32),
+			0 0 0 1px rgb(255 252 246 / 0.35);
+		transition:
+			transform 150ms ease,
+			box-shadow 150ms ease;
+	}
+
+	.gallery-card:hover {
+		transform: translateY(-4px);
+		box-shadow:
+			0 30px 60px rgb(26 45 58 / 0.4),
+			0 0 0 1px rgb(255 252 246 / 0.5);
+	}
+
+	.gallery-card-trigger {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		border: none;
+		background: none;
+		cursor: pointer;
+		text-align: left;
+	}
+
+	.gallery-card-trigger:focus-visible {
+		outline: 2px solid rgb(83 172 211);
+		outline-offset: 2px;
+	}
+
+	/* Every card shows the same crop, so the run reads as one band whatever the
+	   source aspect ratio is. */
+	.gallery-card-media {
+		position: relative;
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+	}
+
+	.gallery-card-date {
+		position: absolute;
+		top: 0.75rem;
+		right: 0.75rem;
+		padding: 0.3rem 0.6rem;
+		border-radius: 999px;
+		background: rgb(26 45 58 / 0.72);
+		backdrop-filter: blur(4px);
+		color: rgb(255 252 246);
+		font-family: var(--font-title);
+		font-size: 0.5rem;
+		font-weight: 400;
+		line-height: 1;
+		letter-spacing: 0.01em;
+		white-space: nowrap;
+	}
+
+	.gallery-card img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 300ms ease;
+	}
+
+	.gallery-card:hover img {
+		transform: scale(1.03);
+	}
+
+	.gallery-card-body {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: 0.4rem;
+		padding: 1rem 1.25rem 1.25rem;
+		color: rgb(26 45 58);
+		font-family: var(--font-body);
+	}
+
+	/* Two lines of teaser, so every card keeps the same footprint. */
+	.gallery-card-excerpt {
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 2;
+		line-clamp: 2;
+		overflow: hidden;
+		color: rgb(26 45 58 / 0.72);
+		font-size: 0.875rem;
+		font-weight: 400;
+		line-height: 1.2;
+	}
+
+	.gallery-rail-controls {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: clamp(1rem, 3vw, 2rem);
+		padding-inline: var(--gallery-gutter);
+	}
+
+	.gallery-rail-arrow {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		padding: 0;
+		border: 1px solid rgb(255 252 246 / 0.55);
+		border-radius: 9999px;
+		background: rgb(26 45 58 / 0.25);
+		color: rgb(255 252 246);
+		cursor: pointer;
+		backdrop-filter: blur(6px);
+		transition:
+			background 150ms ease,
+			transform 150ms ease;
+	}
+
+	.gallery-rail-arrow svg {
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+
+	.gallery-rail-arrow:hover {
+		background: rgb(26 45 58 / 0.45);
+	}
+
+	.gallery-rail-arrow:active {
+		transform: scale(0.94);
+	}
+
+	.gallery-rail-arrow:focus-visible {
+		outline: 2px solid rgb(255 252 246);
+		outline-offset: 2px;
+	}
+
+	.gallery-rail-track {
+		flex: 1;
+		max-width: 360px;
+		height: 3px;
+		border-radius: 9999px;
+		background: rgb(255 252 246 / 0.3);
+		overflow: hidden;
+	}
+
+	.gallery-rail-thumb {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border-radius: 9999px;
+		background: rgb(255 252 246);
+	}
+
+	.gallery-lightbox:not([open]) {
+		display: none;
+	}
+
+	.gallery-lightbox[open] {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 100%;
+		max-width: none;
+		height: 100%;
+		max-height: none;
+		padding: 3.5rem 1rem 1rem;
+		margin: 0;
+		border: none;
+		background: rgb(10 14 20 / 0.94);
+	}
+
+	.gallery-lightbox::backdrop {
+		background: rgb(10 14 20 / 0.94);
+	}
+
+	.gallery-lightbox-layout {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		max-width: 72rem;
+		max-height: calc(100vh - 4.5rem);
+		overflow: hidden;
+		border-radius: 1.5rem;
+	}
+
+	@media (width >= 1024px) {
+		.gallery-lightbox-layout {
+			flex-direction: row;
+			max-height: calc(100vh - 5rem);
+		}
+	}
+
+	.gallery-lightbox-media {
+		display: flex;
+		flex: 1 1 65%;
+		align-items: center;
+		justify-content: center;
+		min-height: 0;
+		padding: 1rem;
+		margin: 0;
+		background: rgba(27, 37, 49, 0.94);
+	}
+
+	.gallery-lightbox-image {
+		display: block;
+		max-width: 100%;
+		max-height: min(60vh, 100%);
+		width: auto;
+		height: auto;
+		object-fit: contain;
+		border-radius: 8px;
+	}
+
+	@media (width >= 1024px) {
+		.gallery-lightbox-image {
+			max-height: calc(100vh - 7rem);
+		}
+	}
+
+	.gallery-lightbox-panel {
+		display: flex;
+		flex: 1 1 35%;
+		flex-direction: column;
+		gap: 1.25rem;
+		min-height: 0;
+		padding: 1.75rem 1.5rem 2rem;
+		overflow-y: auto;
+		background: rgb(255 252 246);
+	}
+
+	@media (width >= 1024px) {
+		.gallery-lightbox-panel {
+			padding: 2.75rem 2.5rem;
+			border-left: 1px solid rgb(26 45 58 / 0.08);
+		}
+	}
+
+	.gallery-lightbox-title {
+		position: relative;
+		padding-bottom: 1rem;
+		color: rgb(26 45 58);
+		font-family: var(--font-display);
+		font-size: 1.875rem;
+		font-weight: 800;
+		line-height: 1.1;
+		letter-spacing: -0.01em;
+		text-wrap: balance;
+	}
+
+	.gallery-lightbox-title::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		width: 2.5rem;
+		height: 3px;
+		border-radius: 9999px;
+		background: linear-gradient(90deg, rgb(255 184 45), rgb(196 138 32));
+	}
+
+	@media (width >= 1024px) {
+		.gallery-lightbox-title {
+			font-size: 2.125rem;
+		}
+	}
+
+	.gallery-lightbox-description {
+		color: rgb(26 45 58 / 0.78);
+		font-family: var(--font-body);
+		font-size: 0.9375rem;
+		font-weight: 400;
+		line-height: 1.4;
+	}
+
+	.gallery-lightbox-description :where(p, ul, ol) {
+		margin: 0 0 0.875rem;
+	}
+
+	.gallery-lightbox-description :where(p:last-child, ul:last-child, ol:last-child) {
+		margin-bottom: 0;
+	}
+
+	.gallery-lightbox-description a {
+		color: rgb(26 45 58);
+		font-weight: 700;
+		text-decoration: underline;
+		text-decoration-color: rgb(83 172 211 / 0.6);
+		text-decoration-thickness: 1.5px;
+		text-underline-offset: 0.18em;
+		transition: text-decoration-color 150ms ease;
+	}
+
+	.gallery-lightbox-description a:hover {
+		text-decoration-color: rgb(83 172 211);
+	}
+
+	.gallery-lightbox-description em {
+		font-style: italic;
+	}
+
+	.gallery-lightbox-description strong {
+		color: rgb(26 45 58);
+		font-weight: 700;
+	}
+
+	.gallery-lightbox-date {
+		display: block;
+		margin-top: auto;
+		padding-top: 1.25rem;
+		border-top: 1px solid rgb(26 45 58 / 0.08);
+		color: rgb(26 45 58 / 0.55);
+		font-family: var(--font-title);
+		font-size: 0.75rem;
+		font-weight: 700;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.gallery-lightbox-close {
+		position: fixed;
+		top: 1rem;
+		right: 1rem;
+		z-index: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		padding: 0;
+		border: none;
+		border-radius: 9999px;
+		background: rgb(255 252 246 / 0.12);
+		color: rgb(255 252 246);
+		cursor: pointer;
+		transition: background 150ms ease;
+	}
+
+	.gallery-lightbox-close svg {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	.gallery-lightbox-close:hover {
+		background: rgb(255 252 246 / 0.2);
+	}
+
+	.gallery-lightbox-close:focus-visible {
+		outline: 2px solid rgb(255 252 246);
+		outline-offset: 2px;
+	}
 }
 
 @layer utilities {
@@ -242,6 +681,24 @@
 		text-wrap: balance;
 	}
 
+	/* The gallery sits in the blurred library: the cream cards need the dark
+	   wash over the plate to keep their edges and shadows readable. */
+	.home-gallery {
+		position: relative;
+		display: flex;
+		justify-content: center;
+		padding-block: clamp(2.5rem, 7vw, 5rem);
+		background-color: rgb(48 41 30);
+		background-image:
+			linear-gradient(rgb(26 21 14 / 0.45), rgb(26 21 14 / 0.45)),
+			image-set(
+				url("/images/gallery/library-2000.webp") 2x,
+				url("/images/gallery/library-1200.webp") 1x
+			);
+		background-size: cover;
+		background-position: center;
+	}
+
 	/* Landscape/desktop: 25% keeps the logo and both characters inside the
 	   cover crop, down to roughly a 1024px-wide window. */
 	@media (min-width: 48rem) and (min-aspect-ratio: 5/4) {
@@ -262,6 +719,78 @@
 		.home-social-btn {
 			height: 3.25rem;
 			width: 3.25rem;
+		}
+	}
+}
+
+@layer utilities {
+	/* Closing band, after the reference plate: the series title and its credits
+	   on the left, the library on the right, everything in grey on near-black. */
+	.site-footer {
+		position: relative;
+		overflow: hidden;
+		padding: clamp(2.5rem, 7vw, 4.5rem) 1.25rem;
+		background: rgb(21 19 18);
+	}
+
+	/* Fades out toward the title, so the text never sits on the art. On narrow
+	   screens the plate spans the band and drops back to a faint backdrop. */
+	.site-footer-art {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		opacity: 0.3;
+		mask-image: linear-gradient(to right, transparent 0%, #000 65%);
+	}
+
+	.site-footer-inner {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: clamp(1rem, 3vw, 1.5rem);
+		margin-inline: auto;
+		max-width: 72rem;
+		text-align: center;
+	}
+
+	.site-footer-title {
+		width: clamp(11rem, 34vw, 17rem);
+		height: auto;
+		filter: drop-shadow(0 2px 14px rgb(0 0 0 / 0.65));
+	}
+
+	.site-footer-credits {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		margin: 0;
+		color: rgb(232 229 222 / 0.78);
+		font-family: var(--font-body);
+		font-size: clamp(0.9375rem, 2.5vw, 1.125rem);
+		line-height: 1.5;
+	}
+
+	.site-footer-label {
+		color: rgb(232 229 222 / 0.5);
+		letter-spacing: 0.06em;
+	}
+
+	@media (min-width: 48rem) {
+		.site-footer-art {
+			left: 38%;
+			width: 62%;
+			opacity: 1;
+			mask-image: linear-gradient(to right, transparent 0%, #000 45%);
+		}
+
+		.site-footer-inner {
+			align-items: flex-start;
+			padding-inline: clamp(1rem, 4vw, 3rem);
+			text-align: left;
 		}
 	}
 }

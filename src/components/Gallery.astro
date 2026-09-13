@@ -1,0 +1,170 @@
+---
+import type { GalleryImage } from '../lib/gallery.ts';
+
+interface Props {
+	images: GalleryImage[];
+	title?: string;
+}
+
+const { images, title } = Astro.props;
+
+// Cards show a plain-text teaser, so the manifest's rich description is stripped.
+const excerpt = (html: string) =>
+	html
+		.replace(/<[^>]*>/g, ' ')
+		.replace(/\s+/g, ' ')
+		.trim();
+
+// Manifest dates are YYYY/MM/DD; the badge shows them the French way.
+const formatDate = (date?: string) => {
+	if (!date) return undefined;
+	const parsed = new Date(date.replace(/\//g, '-'));
+	return Number.isNaN(parsed.getTime())
+		? date
+		: parsed.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+};
+---
+
+<div class="gallery-rail-shell">
+	{title && <h2 class="gallery-rail-title">{title}</h2>}
+	<ul class="gallery-rail" data-at-start>
+		{
+			images.map(({ src, title, description, date }, index) => (
+				<li class="gallery-card">
+					<button
+						type="button"
+						class="gallery-card-trigger"
+						data-gallery-index={index}
+						aria-label={`Voir ${title} en plein écran`}
+					>
+						<span class="gallery-card-media">
+							<img src={src} alt={title} loading="lazy" decoding="async" />
+							{date && <span class="gallery-card-date">{formatDate(date)}</span>}
+						</span>
+						<span class="gallery-card-body">
+							{description && <span class="gallery-card-excerpt">{excerpt(description)}</span>}
+						</span>
+					</button>
+				</li>
+			))
+		}
+	</ul>
+
+	<div class="gallery-rail-controls">
+		<button type="button" class="gallery-rail-arrow" data-gallery-scroll="-1" aria-label="Voir les images précédentes">
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+			</svg>
+		</button>
+		<div class="gallery-rail-track" aria-hidden="true">
+			<span class="gallery-rail-thumb"></span>
+		</div>
+		<button type="button" class="gallery-rail-arrow" data-gallery-scroll="1" aria-label="Voir les images suivantes">
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+			</svg>
+		</button>
+	</div>
+</div>
+
+<dialog class="gallery-lightbox" aria-label="Image full screen view">
+	<button type="button" class="gallery-lightbox-close" aria-label="Close">
+		<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+			<path
+				d="M6 6l12 12M18 6L6 18"
+				stroke="currentColor"
+				stroke-width="2"
+				stroke-linecap="round"></path>
+		</svg>
+	</button>
+	<div class="gallery-lightbox-layout">
+		<figure class="gallery-lightbox-media">
+			<img class="gallery-lightbox-image" alt="" />
+		</figure>
+		<aside class="gallery-lightbox-panel">
+			<h2 class="gallery-lightbox-title"></h2>
+			<div class="gallery-lightbox-description"></div>
+			<time class="gallery-lightbox-date" hidden></time>
+		</aside>
+	</div>
+</dialog>
+
+<script define:vars={{ galleryData: images }}>
+	const rail = document.querySelector('.gallery-rail');
+	const shell = document.querySelector('.gallery-rail-shell');
+	const thumb = document.querySelector('.gallery-rail-thumb');
+	const dialog = document.querySelector('.gallery-lightbox');
+	const lightboxImage = dialog?.querySelector('.gallery-lightbox-image');
+	const lightboxTitle = dialog?.querySelector('.gallery-lightbox-title');
+	const lightboxDescription = dialog?.querySelector('.gallery-lightbox-description');
+	const lightboxDate = dialog?.querySelector('.gallery-lightbox-date');
+	const closeButton = dialog?.querySelector('.gallery-lightbox-close');
+
+	// Turn consecutive <br> tags into paragraph breaks so spacing is driven by CSS.
+	function formatDescription(html) {
+		return html.replace(/(?:\s*<br\s*\/?>\s*){2,}/gi, '</p><p>');
+	}
+
+	function openLightbox(index) {
+		const item = galleryData[index];
+		if (!item || !dialog || !lightboxImage || !lightboxTitle || !lightboxDescription) return;
+
+		lightboxImage.src = item.src;
+		lightboxImage.alt = item.title;
+		lightboxTitle.textContent = item.title;
+		lightboxDescription.innerHTML = formatDescription(item.description);
+		if (lightboxDate) {
+			lightboxDate.textContent = item.date ?? '';
+			lightboxDate.hidden = !item.date;
+		}
+		dialog.showModal();
+	}
+
+	rail?.addEventListener('click', (event) => {
+		const trigger = event.target.closest('[data-gallery-index]');
+		if (!trigger) return;
+
+		const index = Number(trigger.dataset.galleryIndex);
+		if (Number.isNaN(index)) return;
+
+		openLightbox(index);
+	});
+
+	// The arrows step by one card plus its gap, so a click always lands the next
+	// card on the same edge the previous one sat at.
+	function step() {
+		const card = rail?.querySelector('.gallery-card');
+		if (!card) return 0;
+		const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+		return card.getBoundingClientRect().width + gap;
+	}
+
+	shell?.querySelectorAll('[data-gallery-scroll]').forEach((button) => {
+		button.addEventListener('click', () => {
+			rail?.scrollBy({ left: step() * Number(button.dataset.galleryScroll), behavior: 'smooth' });
+		});
+	});
+
+	// Custom progress bar: the native scrollbar is hidden so the rail reads as
+	// part of the art rather than as a scrolling box.
+	function updateProgress() {
+		if (!rail || !thumb) return;
+		const scrollable = rail.scrollWidth - rail.clientWidth;
+		// Edge fades, one per side, only while that side still hides a card.
+		rail.toggleAttribute('data-at-start', rail.scrollLeft <= 1);
+		rail.toggleAttribute('data-at-end', rail.scrollLeft >= scrollable - 1);
+		const ratio = rail.clientWidth / rail.scrollWidth;
+		thumb.style.width = `${Math.min(ratio, 1) * 100}%`;
+		thumb.style.transform = `translateX(${scrollable > 0 ? (rail.scrollLeft / scrollable) * (100 / Math.min(ratio, 1) - 100) : 0}%)`;
+	}
+
+	rail?.addEventListener('scroll', updateProgress, { passive: true });
+	window.addEventListener('resize', updateProgress);
+	updateProgress();
+
+	closeButton?.addEventListener('click', () => dialog?.close());
+
+	dialog?.addEventListener('click', (event) => {
+		if (event.target === dialog) dialog.close();
+	});
+</script>
