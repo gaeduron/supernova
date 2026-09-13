@@ -18,9 +18,20 @@
 	font-display: swap;
 }
 
+/* Dela Suko Gothic, the heavy display face used for section titles. The source
+   is a 2.5MB CJK family; only the Latin subset ships (scripts/build-title-font.mjs). */
+@font-face {
+	font-family: "Dela Suko Gothic";
+	src: url("/fonts/subset/DelaSukoGothicOne-latin.woff") format("woff");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
 @theme {
 	--font-display: "Neuton", Georgia, serif;
 	--font-body: "Neuton", Georgia, serif;
+	--font-title: "Dela Suko Gothic", "Neuton", Georgia, sans-serif;
 }
 
 @layer base {
@@ -147,90 +158,104 @@
 		transform: translateY(0);
 	}
 
-	.gallery-masonry {
-		columns: 1;
-		column-gap: 1.25rem;
+	/* The rail is one horizontal run of equally sized cards: big image on top,
+	   title on the parchment strip below. */
+	.gallery-rail-shell {
+		--gallery-gutter: 1.25rem;
+		display: flex;
+		flex-direction: column;
+		gap: clamp(1.25rem, 3vw, 2rem);
+		width: 100%;
 	}
 
-	@media (width >= 640px) {
-		.gallery-masonry {
-			columns: 2;
+	@media (width >= 48rem) {
+		.gallery-rail-shell {
+			--gallery-gutter: clamp(1.5rem, 4vw, 3rem);
 		}
 	}
 
-	@media (width >= 1024px) {
-		.gallery-masonry {
-			columns: 3;
-		}
+	/* Sits over the photo, so it carries its own shadow rather than relying on
+	   the section's wash. */
+	.gallery-rail-title {
+		margin: 0;
+		padding-inline: var(--gallery-gutter);
+		color: rgb(255 252 246);
+		font-family: var(--font-title);
+		font-size: clamp(1.75rem, 6vw, 3.25rem);
+		font-weight: 400;
+		line-height: 1.1;
+		letter-spacing: 0.005em;
+		text-shadow: 0 2px 18px rgb(26 21 14 / 0.55);
+	}
+
+	.gallery-rail {
+		--gallery-card-width: clamp(14rem, 72vw, 20rem);
+		--gallery-fade: clamp(2rem, 7vw, 6rem);
+		--gallery-fade-start: var(--gallery-fade);
+		--gallery-fade-end: var(--gallery-fade);
+		display: flex;
+		gap: clamp(1rem, 2.5vw, 1.75rem);
+		margin: 0;
+		padding: 0.5rem var(--gallery-gutter) 1.5rem;
+		list-style: none;
+		overflow-x: auto;
+		overscroll-behavior-x: contain;
+		scroll-snap-type: x mandatory;
+		scroll-padding-left: var(--gallery-gutter);
+		scrollbar-width: none;
+		mask-image: linear-gradient(
+			to right,
+			transparent 0,
+			#000 var(--gallery-fade-start),
+			#000 calc(100% - var(--gallery-fade-end)),
+			transparent 100%
+		);
+	}
+
+	.gallery-rail[data-at-start] {
+		--gallery-fade-start: 0px;
+	}
+
+	.gallery-rail[data-at-end] {
+		--gallery-fade-end: 0px;
+	}
+
+	.gallery-rail::-webkit-scrollbar {
+		display: none;
 	}
 
 	.gallery-card {
-		display: inline-block;
-		width: 100%;
-		margin-bottom: 1.25rem;
-		break-inside: avoid;
+		flex: 0 0 var(--gallery-card-width);
+		width: var(--gallery-card-width);
+		scroll-snap-align: start;
+		border-radius: 1.5rem;
+		overflow: hidden;
 		background: rgb(255 252 246);
 		box-shadow:
-			0 24px 48px rgb(26 45 58 / 0.12),
-			0 0 0 1px rgb(83 172 211 / 0.12);
+			0 24px 48px rgb(26 45 58 / 0.32),
+			0 0 0 1px rgb(255 252 246 / 0.35);
 		transition:
 			transform 150ms ease,
 			box-shadow 150ms ease;
 	}
 
 	.gallery-card:hover {
-		transform: translateY(-2px);
+		transform: translateY(-4px);
 		box-shadow:
-			0 28px 56px rgb(26 45 58 / 0.16),
-			0 0 0 1px rgb(83 172 211 / 0.12);
+			0 30px 60px rgb(26 45 58 / 0.4),
+			0 0 0 1px rgb(255 252 246 / 0.5);
 	}
 
 	.gallery-card-trigger {
-		position: relative;
-		display: block;
+		display: flex;
+		flex-direction: column;
 		width: 100%;
+		height: 100%;
 		padding: 0;
 		border: none;
 		background: none;
 		cursor: zoom-in;
-	}
-
-	.gallery-card-trigger::after {
-		content: '';
-		position: absolute;
-		inset: 0;
-		background: linear-gradient(to top, rgb(247, 237, 218) 0%, transparent 35%);
-		opacity: 0;
-		transition: opacity 150ms ease;
-		pointer-events: none;
-	}
-
-	.gallery-card-trigger:hover::after,
-	.gallery-card-trigger:focus-visible::after {
-		opacity: 1;
-	}
-
-	.gallery-card-caption {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		z-index: 1;
-		padding: 1rem 1.25rem;
-		color: rgb(26 45 58);
-		font-family: "Nunito", system-ui, sans-serif;
-		font-size: 0.875rem;
-		font-weight: 700;
-		line-height: 1.3;
 		text-align: left;
-		opacity: 0;
-		transition: opacity 150ms ease;
-		pointer-events: none;
-	}
-
-	.gallery-card-trigger:hover .gallery-card-caption,
-	.gallery-card-trigger:focus-visible .gallery-card-caption {
-		opacity: 1;
 	}
 
 	.gallery-card-trigger:focus-visible {
@@ -238,10 +263,100 @@
 		outline-offset: 2px;
 	}
 
+	/* Every card shows the same crop, so the run reads as one band whatever the
+	   source aspect ratio is. */
+	.gallery-card-media {
+		display: block;
+		width: 100%;
+		aspect-ratio: 4 / 5;
+		overflow: hidden;
+	}
+
 	.gallery-card img {
 		display: block;
 		width: 100%;
-		height: auto;
+		height: 100%;
+		object-fit: cover;
+		transition: transform 300ms ease;
+	}
+
+	.gallery-card:hover img {
+		transform: scale(1.03);
+	}
+
+	.gallery-card-caption {
+		display: flex;
+		flex: 1;
+		align-items: center;
+		padding: 1rem 1.25rem 1.25rem;
+		color: rgb(26 45 58);
+		font-family: var(--font-body);
+		font-size: 1rem;
+		font-weight: 700;
+		line-height: 1.3;
+		text-wrap: balance;
+	}
+
+	.gallery-rail-controls {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: clamp(1rem, 3vw, 2rem);
+		padding-inline: var(--gallery-gutter);
+	}
+
+	.gallery-rail-arrow {
+		display: flex;
+		flex: none;
+		align-items: center;
+		justify-content: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		padding: 0;
+		border: 1px solid rgb(255 252 246 / 0.55);
+		border-radius: 9999px;
+		background: rgb(26 45 58 / 0.25);
+		color: rgb(255 252 246);
+		cursor: pointer;
+		backdrop-filter: blur(6px);
+		transition:
+			background 150ms ease,
+			transform 150ms ease;
+	}
+
+	.gallery-rail-arrow svg {
+		width: 1.125rem;
+		height: 1.125rem;
+	}
+
+	.gallery-rail-arrow:hover {
+		background: rgb(26 45 58 / 0.45);
+	}
+
+	.gallery-rail-arrow:active {
+		transform: scale(0.94);
+	}
+
+	.gallery-rail-arrow:focus-visible {
+		outline: 2px solid rgb(255 252 246);
+		outline-offset: 2px;
+	}
+
+	.gallery-rail-track {
+		flex: 1;
+		max-width: 360px;
+		height: 3px;
+		border-radius: 9999px;
+		background: rgb(255 252 246 / 0.3);
+		overflow: hidden;
+	}
+
+	.gallery-rail-thumb {
+		display: block;
+		width: 100%;
+		height: 100%;
+		border-radius: 9999px;
+		background: rgb(255 252 246);
 	}
 
 	.gallery-lightbox:not([open]) {
@@ -332,7 +447,7 @@
 		position: relative;
 		padding-bottom: 1rem;
 		color: rgb(26 45 58);
-		font-family: "Neuton", Georgia, serif;
+		font-family: var(--font-display);
 		font-size: 1.875rem;
 		font-weight: 800;
 		line-height: 1.1;
@@ -359,7 +474,7 @@
 
 	.gallery-lightbox-description {
 		color: rgb(26 45 58 / 0.78);
-		font-family: "Nunito", system-ui, sans-serif;
+		font-family: var(--font-body);
 		font-size: 0.9375rem;
 		font-weight: 400;
 		line-height: 1.55;
@@ -402,7 +517,7 @@
 		padding-top: 1.25rem;
 		border-top: 1px solid rgb(26 45 58 / 0.08);
 		color: rgb(26 45 58 / 0.55);
-		font-family: "Nunito", system-ui, sans-serif;
+		font-family: var(--font-body);
 		font-size: 0.75rem;
 		font-weight: 700;
 		letter-spacing: 0.08em;
@@ -538,13 +653,22 @@
 		text-wrap: balance;
 	}
 
-	/* The gallery continues the parchment band: the cards are cream, so they
-	   need a toned ground to keep their edges and shadows readable. */
+	/* The gallery sits in the blurred library: the cream cards need the dark
+	   wash over the plate to keep their edges and shadows readable. */
 	.home-gallery {
+		position: relative;
 		display: flex;
 		justify-content: center;
-		background: rgb(239 237 224);
-		padding: 0 1.25rem clamp(2rem, 6vw, 4rem);
+		padding-block: clamp(2.5rem, 7vw, 5rem);
+		background-color: rgb(48 41 30);
+		background-image:
+			linear-gradient(rgb(26 21 14 / 0.45), rgb(26 21 14 / 0.45)),
+			image-set(
+				url("/images/gallery/library-2000.webp") 2x,
+				url("/images/gallery/library-1200.webp") 1x
+			);
+		background-size: cover;
+		background-position: center;
 	}
 
 	/* Landscape/desktop: 25% keeps the logo and both characters inside the

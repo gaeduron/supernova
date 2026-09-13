@@ -3,27 +3,49 @@ import type { GalleryImage } from '../lib/gallery.ts';
 
 interface Props {
 	images: GalleryImage[];
+	title?: string;
 }
 
-const { images } = Astro.props;
+const { images, title } = Astro.props;
 ---
 
-<div class="gallery-masonry w-full max-w-5xl">
-	{
-		images.map(({ src, title }, index) => (
-			<article class="gallery-card overflow-hidden rounded-3xl">
-				<button
-					type="button"
-					class="gallery-card-trigger"
-					data-gallery-index={index}
-					aria-label={`View ${title} full screen`}
-				>
-					<img src={src} alt={title} loading="lazy" decoding="async" />
-					<span class="gallery-card-caption">{title}</span>
-				</button>
-			</article>
-		))
-	}
+<div class="gallery-rail-shell">
+	{title && <h2 class="gallery-rail-title">{title}</h2>}
+	<ul class="gallery-rail" data-at-start>
+		{
+			images.map(({ src, title }, index) => (
+				<li class="gallery-card">
+					<button
+						type="button"
+						class="gallery-card-trigger"
+						data-gallery-index={index}
+						aria-label={`Voir ${title} en plein écran`}
+					>
+						<span class="gallery-card-media">
+							<img src={src} alt={title} loading="lazy" decoding="async" />
+						</span>
+						<span class="gallery-card-caption">{title}</span>
+					</button>
+				</li>
+			))
+		}
+	</ul>
+
+	<div class="gallery-rail-controls">
+		<button type="button" class="gallery-rail-arrow" data-gallery-scroll="-1" aria-label="Voir les images précédentes">
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+			</svg>
+		</button>
+		<div class="gallery-rail-track" aria-hidden="true">
+			<span class="gallery-rail-thumb"></span>
+		</div>
+		<button type="button" class="gallery-rail-arrow" data-gallery-scroll="1" aria-label="Voir les images suivantes">
+			<svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+				<path d="M9 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+			</svg>
+		</button>
+	</div>
 </div>
 
 <dialog class="gallery-lightbox" aria-label="Image full screen view">
@@ -49,7 +71,9 @@ const { images } = Astro.props;
 </dialog>
 
 <script define:vars={{ galleryData: images }}>
-	const gallery = document.querySelector('.gallery-masonry');
+	const rail = document.querySelector('.gallery-rail');
+	const shell = document.querySelector('.gallery-rail-shell');
+	const thumb = document.querySelector('.gallery-rail-thumb');
 	const dialog = document.querySelector('.gallery-lightbox');
 	const lightboxImage = dialog?.querySelector('.gallery-lightbox-image');
 	const lightboxTitle = dialog?.querySelector('.gallery-lightbox-title');
@@ -77,7 +101,7 @@ const { images } = Astro.props;
 		dialog.showModal();
 	}
 
-	gallery?.addEventListener('click', (event) => {
+	rail?.addEventListener('click', (event) => {
 		const trigger = event.target.closest('[data-gallery-index]');
 		if (!trigger) return;
 
@@ -86,6 +110,38 @@ const { images } = Astro.props;
 
 		openLightbox(index);
 	});
+
+	// The arrows step by one card plus its gap, so a click always lands the next
+	// card on the same edge the previous one sat at.
+	function step() {
+		const card = rail?.querySelector('.gallery-card');
+		if (!card) return 0;
+		const gap = parseFloat(getComputedStyle(rail).columnGap) || 0;
+		return card.getBoundingClientRect().width + gap;
+	}
+
+	shell?.querySelectorAll('[data-gallery-scroll]').forEach((button) => {
+		button.addEventListener('click', () => {
+			rail?.scrollBy({ left: step() * Number(button.dataset.galleryScroll), behavior: 'smooth' });
+		});
+	});
+
+	// Custom progress bar: the native scrollbar is hidden so the rail reads as
+	// part of the art rather than as a scrolling box.
+	function updateProgress() {
+		if (!rail || !thumb) return;
+		const scrollable = rail.scrollWidth - rail.clientWidth;
+		// Edge fades, one per side, only while that side still hides a card.
+		rail.toggleAttribute('data-at-start', rail.scrollLeft <= 1);
+		rail.toggleAttribute('data-at-end', rail.scrollLeft >= scrollable - 1);
+		const ratio = rail.clientWidth / rail.scrollWidth;
+		thumb.style.width = `${Math.min(ratio, 1) * 100}%`;
+		thumb.style.transform = `translateX(${scrollable > 0 ? (rail.scrollLeft / scrollable) * (100 / Math.min(ratio, 1) - 100) : 0}%)`;
+	}
+
+	rail?.addEventListener('scroll', updateProgress, { passive: true });
+	window.addEventListener('resize', updateProgress);
+	updateProgress();
 
 	closeButton?.addEventListener('click', () => dialog?.close());
 
