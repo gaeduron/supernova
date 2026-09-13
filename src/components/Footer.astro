@@ -26,9 +26,24 @@ const footer = `${base}images/footer`;
 			decoding="async"
 		/>
 
-		<p class="site-footer-credits">
-			<span><span class="site-footer-label">Auteur&nbsp;&nbsp;:</span> Nicolas Jaffré</span>
-			<span><span class="site-footer-label">Éditeur&nbsp;:</span> Kana</span>
+		<div class="site-footer-credits">
+			<div class="site-footer-credit">
+				<span class="site-footer-label">Auteur</span>
+				<span>Nicolas Jaffré</span>
+			</div>
+			<div class="site-footer-credit">
+				<span class="site-footer-label">Éditeur</span>
+				<span>Kana</span>
+			</div>
+			<div class="site-footer-credit">
+				<span class="site-footer-label">Site web</span>
+				<span>Gaëtan Duron</span>
+			</div>
+		</div>
+
+		<p class="site-footer-legal">
+			© Nicolas Jaffré / Kana. Tous droits réservés.
+			<a href={`${base}mentions-legales`}>Mentions légales et confidentialité</a>
 		</p>
 	</div>
 </footer>
