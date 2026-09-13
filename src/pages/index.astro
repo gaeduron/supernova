@@ -4,7 +4,11 @@ import SocialIcon from '../components/SocialIcon.astro';
 import '../styles/global.css';
 
 const base = import.meta.env.BASE_URL;
-const avatar = `${base}images/Supernova_profile_picture_60kb.jpg`;
+const banner = `${base}images/banner`;
+
+// Both plates carry the logo painted in: the desktop one on the left, the tall
+// mobile one under the pair.
+const DESKTOP_BANNER = '(min-width: 48rem) and (min-aspect-ratio: 5/4)';
 
 const links = [
 	{
@@ -25,42 +29,54 @@ const links = [
 ];
 ---
 
-<BaseLayout>
-	<div class="link-page-bg flex min-h-screen flex-col items-center px-5 py-10 sm:py-16">
-		<div class="link-card flex w-full max-w-sm flex-col items-center rounded-3xl p-3 sm:p-4">
-			<div class="link-avatar-frame">
-				<img
-					src={avatar}
-					alt="Nicolas Jaffré"
-					width="1386"
-					height="1405"
-					class="link-avatar"
-					loading="eager"
-					decoding="async"
-				/>
-			</div>
+<BaseLayout title="Supernova — Nicolas Jaffré">
+	<header class="home-banner">
+		<picture>
+			<source
+				media={DESKTOP_BANNER}
+				srcset={`${banner}/banner-desktop-1600.webp 1600w, ${banner}/banner-desktop-2400.webp 2400w`}
+				sizes="100vw"
+			/>
+			<img
+				src={`${banner}/banner-mobile-900.webp`}
+				srcset={`${banner}/banner-mobile-900.webp 900w, ${banner}/banner-mobile-1400.webp 1400w`}
+				sizes="67vh"
+				alt="Supernova — les deux héros devant le palais de justice"
+				class="home-banner-art"
+				fetchpriority="high"
+				decoding="async"
+			/>
+		</picture>
 
-			<p class="link-name mt-6 text-4xl font-bold leading-none tracking-tighter">Nicolas Jaffre</p>
-			<p class="link-subtitle mt-0.5">Auteur de Supernova</p>
+		<img
+			src={`${base}images/logo_kana.svg`}
+			alt="Supernova"
+			class="home-banner-logo"
+			width="49"
+			height="124"
+		/>
 
-			<ul class="mt-8 flex w-full flex-row gap-2">
-				{
-					links.map(({ label, href, icon }) => (
-						<li class="flex-1">
-							<a
-								href={href}
-								target="_blank"
-								rel="noopener noreferrer"
-								aria-label={label}
-								class="link-pill bg-white py-4"
-							>
-								<SocialIcon name={icon} />
-								<span class="sr-only">{label}</span>
-							</a>
-						</li>
-					))
-				}
-			</ul>
-		</div>
-	</div>
+		<ul class="home-banner-social">
+			{
+				links.map(({ label, href, icon }) => (
+					<li>
+						<a
+							href={href}
+							target="_blank"
+							rel="noopener noreferrer"
+							aria-label={label}
+							class="home-social-btn"
+						>
+							<SocialIcon name={icon} />
+						</a>
+					</li>
+				))
+			}
+		</ul>
+	</header>
+
+	<section class="home-tagline">
+		<p><span class="home-tagline-pause">Obéir…</span>ou tracer sa propre voie.</p>
+	</section>
+	<!-- <div style="position: relative; padding-top: max(60%,324px); width: 100%; height: 0;"><iframe style="position: absolute; border: none; width: 100%; height: 100%; left: 0; top: 0;" title="Supernova Chapitre 1" src="https://online.fliphtml5.com/EditionsKana/SupernovaChapitre1/" frameborder="0" scrolling="no" seamless="seamless" allowfullscreen="allowfullscreen"></iframe></div> -->
 </BaseLayout>
