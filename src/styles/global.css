@@ -35,6 +35,9 @@
 	}
 
 	.link-card {
+		--card-radius: 1.5rem;
+		--card-padding: 0.75rem;
+		--frame-radius: calc(var(--card-radius) - var(--card-padding));
 		background: rgb(255 252 246);
 		box-shadow:
 			0 24px 48px rgb(26 45 58 / 0.12),
@@ -42,8 +45,9 @@
 	}
 
 	.link-avatar-frame {
-		display: inline-flex;
-		border-radius: 50%;
+		display: flex;
+		width: 100%;
+		border-radius: var(--frame-radius);
 		padding: 4px;
 		background:
 			radial-gradient(circle at 28% 22%, rgb(255 248 210) 0%, transparent 42%),
@@ -63,16 +67,32 @@
 			0 0 20px rgb(255 184 45 / 0.08);
 	}
 
+	@media (min-width: 40rem) {
+		.link-card {
+			--card-padding: 1rem;
+		}
+	}
+
 	.link-avatar {
 		display: block;
-		width: 8rem;
-		height: 8rem;
-		border-radius: 50%;
+		width: 100%;
+		aspect-ratio: 1;
+		height: auto;
+		border-radius: calc(var(--frame-radius) - 4px);
 		object-fit: cover;
 	}
 
 	.link-name {
 		color: rgb(26 45 58);
+	}
+
+	.link-subtitle {
+		font-family: "Nunito", system-ui, sans-serif;
+		font-size: 0.8125rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgb(26 45 58 / 0.55);
 	}
 
 	.link-pill {
@@ -81,37 +101,28 @@
 		align-items: center;
 		justify-content: center;
 		width: 100%;
+		border-radius: calc(var(--frame-radius) + 0.25rem);
 		font-family: "Nunito", system-ui, sans-serif;
 		color: rgb(26 45 58);
 		box-shadow:
-			0 4px 14px rgb(0 0 0 / 0.12),
-			0 0 0 1px rgb(83 172 211 / 0.1);
+			0 1px 2px rgb(26 45 58 / 0.06),
+			0 0 0 1px rgb(26 45 58 / 0.16);
 		transition:
 			transform 150ms ease,
 			box-shadow 150ms ease;
 	}
 
 	.link-pill-icon {
-		position: absolute;
-		left: 1.5rem;
-		width: 1.25rem;
-		height: 1.25rem;
+		width: 1.5rem;
+		height: 1.5rem;
 		flex-shrink: 0;
-	}
-
-	.link-pill-label {
-		font-size: 0.875rem;
-		font-weight: 700;
-		text-transform: uppercase;
-		letter-spacing: -0.02em;
-		text-align: center;
 	}
 
 	.link-pill:hover {
 		transform: translateY(-1px);
 		box-shadow:
-			0 6px 20px rgb(0 0 0 / 0.16),
-			0 0 0 1px rgb(83 172 211 / 0.1);
+			0 3px 8px rgb(26 45 58 / 0.1),
+			0 0 0 1px rgb(26 45 58 / 0.3);
 	}
 
 	.link-pill:active {

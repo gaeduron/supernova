@@ -27,33 +27,35 @@ const links = [
 
 <BaseLayout>
 	<div class="link-page-bg flex min-h-screen flex-col items-center px-5 py-10 sm:py-16">
-		<div class="link-card flex w-full max-w-sm flex-col items-center rounded-3xl px-6 py-10 sm:px-8 sm:py-12">
+		<div class="link-card flex w-full max-w-sm flex-col items-center rounded-3xl p-3 sm:p-4">
 			<div class="link-avatar-frame">
 				<img
 					src={avatar}
 					alt="Nicolas Jaffré"
-					width="200"
-					height="200"
+					width="1386"
+					height="1405"
 					class="link-avatar"
 					loading="eager"
 					decoding="async"
 				/>
 			</div>
 
-			<p class="link-name mt-5 text-4xl font-bold tracking-tighter">Nicolas Jaffre</p>
+			<p class="link-name mt-6 text-4xl font-bold leading-none tracking-tighter">Nicolas Jaffre</p>
+			<p class="link-subtitle mt-0.5">Auteur de Supernova</p>
 
-			<ul class="mt-10 flex w-full flex-col gap-4">
+			<ul class="mt-8 flex w-full flex-row gap-2">
 				{
 					links.map(({ label, href, icon }) => (
-						<li>
+						<li class="flex-1">
 							<a
 								href={href}
 								target="_blank"
 								rel="noopener noreferrer"
-								class="link-pill rounded-full bg-white px-6 py-4"
+								aria-label={label}
+								class="link-pill bg-white py-4"
 							>
 								<SocialIcon name={icon} />
-								<span class="link-pill-label">{label}</span>
+								<span class="sr-only">{label}</span>
 							</a>
 						</li>
 					))
