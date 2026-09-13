@@ -694,3 +694,75 @@
 		}
 	}
 }
+
+@layer utilities {
+	/* Closing band, after the reference plate: the series title and its credits
+	   on the left, the library on the right, everything in grey on near-black. */
+	.site-footer {
+		position: relative;
+		overflow: hidden;
+		padding: clamp(2.5rem, 7vw, 4.5rem) 1.25rem;
+		background: rgb(21 19 18);
+	}
+
+	/* Fades out toward the title, so the text never sits on the art. On narrow
+	   screens the plate spans the band and drops back to a faint backdrop. */
+	.site-footer-art {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: center;
+		opacity: 0.3;
+		mask-image: linear-gradient(to right, transparent 0%, #000 65%);
+	}
+
+	.site-footer-inner {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: clamp(1rem, 3vw, 1.5rem);
+		margin-inline: auto;
+		max-width: 72rem;
+		text-align: center;
+	}
+
+	.site-footer-title {
+		width: clamp(11rem, 34vw, 17rem);
+		height: auto;
+		filter: drop-shadow(0 2px 14px rgb(0 0 0 / 0.65));
+	}
+
+	.site-footer-credits {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+		margin: 0;
+		color: rgb(232 229 222 / 0.78);
+		font-family: var(--font-body);
+		font-size: clamp(0.9375rem, 2.5vw, 1.125rem);
+		line-height: 1.5;
+	}
+
+	.site-footer-label {
+		color: rgb(232 229 222 / 0.5);
+		letter-spacing: 0.06em;
+	}
+
+	@media (min-width: 48rem) {
+		.site-footer-art {
+			left: 38%;
+			width: 62%;
+			opacity: 1;
+			mask-image: linear-gradient(to right, transparent 0%, #000 45%);
+		}
+
+		.site-footer-inner {
+			align-items: flex-start;
+			padding-inline: clamp(1rem, 4vw, 3rem);
+			text-align: left;
+		}
+	}
+}

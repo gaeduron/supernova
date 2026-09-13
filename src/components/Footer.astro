@@ -1,0 +1,34 @@
+---
+const base = import.meta.env.BASE_URL;
+const footer = `${base}images/footer`;
+---
+
+<footer class="site-footer">
+	<img
+		src={`${footer}/library-gray-1000.webp`}
+		srcset={`${footer}/library-gray-1000.webp 1000w, ${footer}/library-gray-1800.webp 1800w`}
+		sizes="(min-width: 48rem) 65vw, 100vw"
+		alt=""
+		aria-hidden="true"
+		class="site-footer-art"
+		loading="lazy"
+		decoding="async"
+	/>
+
+	<div class="site-footer-inner">
+		<img
+			src={`${footer}/title-gray-800.webp`}
+			alt="Supernova 超新星"
+			class="site-footer-title"
+			width="800"
+			height="346"
+			loading="lazy"
+			decoding="async"
+		/>
+
+		<p class="site-footer-credits">
+			<span><span class="site-footer-label">Auteur&nbsp;&nbsp;:</span> Nicolas Jaffré</span>
+			<span><span class="site-footer-label">Éditeur&nbsp;:</span> Kana</span>
+		</p>
+	</div>
+</footer>
