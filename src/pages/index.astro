@@ -31,9 +31,52 @@ const links = [
 		icon: 'twitch' as const,
 	},
 ];
+
+const title = 'Supernova, le manga de Nicolas Jaffré | Éditions Kana';
+const description =
+	'Découvrez le tome 1 de Supernova, les actualités de l\'auteur et les coulisses de la série.';
+
+// schema.org data for Google (knowledge panel, rich results).
+const siteURL = new URL(base, Astro.site).href;
+const abs = (path: string) => new URL(`${base}${path}`, Astro.site).href;
+const schema = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'WebSite',
+			'@id': `${siteURL}#website`,
+			url: siteURL,
+			name: 'Supernova — Nicolas Jaffré',
+			description,
+			inLanguage: 'fr-FR',
+			publisher: { '@id': `${siteURL}#author` },
+		},
+		{
+			'@type': 'Person',
+			'@id': `${siteURL}#author`,
+			name: 'Nicolas Jaffré',
+			url: siteURL,
+			image: abs('images/Author_Nicolas_Jaffré.png'),
+			jobTitle: 'Auteur de manga',
+			sameAs: links.map((l) => l.href),
+		},
+		{
+			'@type': 'Book',
+			'@id': `${siteURL}#supernova`,
+			name: 'Supernova',
+			url: siteURL,
+			image: abs('images/supernova_tome_1_couverture.jpg'),
+			inLanguage: 'fr',
+			genre: 'Manga',
+			bookFormat: 'https://schema.org/Paperback',
+			author: { '@id': `${siteURL}#author` },
+			publisher: { '@type': 'Organization', name: 'Kana', url: 'https://www.kana.fr' },
+		},
+	],
+};
 ---
 
-<BaseLayout title="Supernova — Nicolas Jaffré">
+<BaseLayout title={title} description={description} schema={schema}>
 	<header class="home-banner">
 		<picture>
 			<source

@@ -2,14 +2,32 @@
 interface Props {
 	title?: string;
 	description?: string;
+	/** Path (relative to the site base) of the image shown in link previews. 1200×630 JPG/PNG. */
+	image?: string;
+	/** Keep the page out of search results (e.g. legal notices). */
+	noindex?: boolean;
+	/** Optional schema.org JSON-LD object, rendered as-is. */
+	schema?: Record<string, unknown>;
 }
 
+const base = import.meta.env.BASE_URL;
+
 const {
-	title = 'Nicolas Jaffre',
-	description = 'Nicolas Jaffré autheur du manga Supernova aux éditions Kana',
+	title = 'Supernova — Nicolas Jaffré',
+	description = 'Site officiel de Supernova, le manga de Nicolas Jaffré aux éditions Kana. Découvrez le tome 1 et suivez l\'actualité de l\'auteur.',
+	image = `${base}images/og-supernova.jpg`,
+	noindex = false,
+	schema,
 } = Astro.props;
 
+const siteName = 'Supernova — Nicolas Jaffré';
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const imageURL = new URL(image, Astro.site);
+
+// `noai` / `noimageai` ask AI crawlers not to reuse the content for training;
+// `tdm-reservation` is the EU text-and-data-mining opt-out. Both are requests,
+// honoured by cooperating bots only — robots.txt does the rest.
+const robots = [noindex ? 'noindex, follow' : 'index, follow', 'noai', 'noimageai'].join(', ');
 ---
 
 <!doctype html>
@@ -17,28 +35,57 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>{title}</title>
 		<meta name="description" content={description} />
-		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+		<meta name="author" content="Nicolas Jaffré" />
+		<meta name="robots" content={robots} />
+		<meta name="tdm-reservation" content="1" />
 		<link rel="canonical" href={canonicalURL} />
 		<meta name="generator" content={Astro.generator} />
 
+		<!-- Link previews (Facebook, WhatsApp, Instagram, Discord, LinkedIn, iMessage…) -->
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content={siteName} />
+		<meta property="og:locale" content="fr_FR" />
+		<meta property="og:url" content={canonicalURL} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={imageURL} />
+		<meta property="og:image:secure_url" content={imageURL} />
+		<meta property="og:image:type" content="image/jpeg" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Supernova, le manga de Nicolas Jaffré — les deux héros devant le palais de justice" />
+
+		<!-- X / Twitter card -->
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@nicolas_jaffre" />
+		<meta name="twitter:creator" content="@nicolas_jaffre" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={imageURL} />
+
+		<!-- Icons -->
+		<link rel="icon" href={`${base}favicon.ico`} sizes="32x32" />
+		<link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+		<link rel="apple-touch-icon" href={`${base}apple-touch-icon.png`} />
+
 		<link
 			rel="preload"
-			href={`${import.meta.env.BASE_URL}fonts/Neuton-Regular.ttf`}
+			href={`${base}fonts/Neuton-Regular.ttf`}
 			as="font"
 			type="font/ttf"
 			crossorigin
 		/>
 		<link
 			rel="preload"
-			href={`${import.meta.env.BASE_URL}fonts/Neuton-Bold.ttf`}
+			href={`${base}fonts/Neuton-Bold.ttf`}
 			as="font"
 			type="font/ttf"
 			crossorigin
 		/>
 
-
-		<title>{title}</title>
+		{schema && <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />}
 	</head>
 	<body>
 		<slot />
